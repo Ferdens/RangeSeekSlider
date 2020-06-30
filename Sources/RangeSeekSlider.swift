@@ -162,10 +162,10 @@ import UIKit
             guard let image = handleImage else {
                 return
             }
-            
+
             var handleFrame = CGRect.zero
             handleFrame.size = image.size
-            
+
             leftHandle.frame = handleFrame
             leftHandle.contents = image.cgImage
 
@@ -288,7 +288,7 @@ import UIKit
     }
 
     open override var intrinsicContentSize: CGSize {
-        return CGSize(width: UIView.noIntrinsicMetric, height: 65.0)
+        return CGSize(width: UIView.noIntrinsicMetric, height: 40)
     }
 
 
@@ -315,7 +315,7 @@ import UIKit
             handleTracking = .right
         }
         let handle: CALayer = (handleTracking == .left) ? leftHandle : rightHandle
-        animate(handle: handle, selected: true)
+//        animate(handle: handle, selected: true)
 
         delegate?.didStartTouches(in: self)
 
@@ -500,8 +500,8 @@ import UIKit
     private func updateColors() {
         let isInitial: Bool = selectedMinValue == minValue && selectedMaxValue == maxValue
         if let initialColor = initialColor?.cgColor, isInitial {
-            minLabel.foregroundColor = initialColor
-            maxLabel.foregroundColor = initialColor
+            minLabel.foregroundColor = minLabelColor?.cgColor ?? initialColor
+            maxLabel.foregroundColor = maxLabelColor?.cgColor ?? initialColor
             sliderLineBetweenHandles.backgroundColor = initialColor
             sliderLine.backgroundColor = initialColor
 
@@ -547,7 +547,7 @@ import UIKit
                                                 width: rightHandle.position.x - leftHandle.position.x,
                                                 height: lineHeight)
     }
-    
+
     private func updateLabelPositions() {
         // the center points for the labels are X = the same x position as the relevant handle. Y = the y position of the handle minus half the height of the text label, minus some padding.
 
@@ -562,11 +562,11 @@ import UIKit
         let minSpacingBetweenLabels: CGFloat = 8.0
 
         let newMinLabelCenter: CGPoint = CGPoint(x: leftHandle.frame.midX,
-                                                 y: leftHandle.frame.maxY + (minLabelTextSize.height/2) + labelPadding)
+                                                 y: leftHandle.frame.minY - (minLabelTextSize.height/2) - labelPadding)
 
         let newMaxLabelCenter: CGPoint = CGPoint(x: rightHandle.frame.midX,
-                                                 y: rightHandle.frame.maxY + (maxLabelTextSize.height/2) + labelPadding)
-        
+                                                 y: rightHandle.frame.minY - (maxLabelTextSize.height/2) - labelPadding)
+
         let newLeftMostXInMaxLabel: CGFloat = newMaxLabelCenter.x - maxLabelTextSize.width / 2.0
         let newRightMostXInMinLabel: CGFloat = newMinLabelCenter.x + minLabelTextSize.width / 2.0
         let newSpacingBetweenTextLabels: CGFloat = newLeftMostXInMaxLabel - newRightMostXInMinLabel
